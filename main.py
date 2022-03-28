@@ -23,10 +23,33 @@ def TopTweets(data):
         print(str(i["retweetCount"]) + "  " + i["user"]["username"] + "  " + i["url"])
     return top10RtObject
 
+def topUsers(data):
+    usersDict = {}
+    top10User = []
+    for tweet in data:
+        if (tweet["user"]["username"] in usersDict.keys()):
+            usersDict[tweet["user"]["username"]] += 1
+        else:
+            usersDict[tweet["user"]["username"]] = 1
+   
+    usersDict = {k: v for k, v in sorted(usersDict.items(), key=lambda item: item[1], reverse=True)}
+
+    aux = 0
+    for user in usersDict:
+        if aux < 9:
+            top10User.append([user, usersDict[user]])
+        else:
+            break
+        aux += 1
+
+    for i in top10User:
+        print("User: "+ i[0] + " - Tweets: " + str(i[1]))
+
+    return(top10User)
 
 def main():
     data = readJson()
     top10Rt = TopTweets(data)
- 
+    top10User = topUsers(data)
 
 main()
