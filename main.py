@@ -3,12 +3,15 @@ import json
 from datetime import datetime
 
 def readJson():
+    
     data = [json.loads(line) for line in open('data.json', 'r')]  
     return data
 
 def TopTweets(data):
+
     top10RtArray = [0]*10
     top10RtObject = []
+
     for tweet in data:
         if tweet["retweetCount"] > top10RtArray[0]:
                 top10RtObject.append(tweet)
@@ -22,14 +25,18 @@ def TopTweets(data):
     top10RtObject.sort(key=lambda x: x["retweetCount"], reverse=True)
 
     aux = 1
+    print("\n Top 10 tuit mas retuitteados:")
     for i in top10RtObject:
         print(str(aux) + ".- Retweeted: " + str(i["retweetCount"]) + " - User: " + i["user"]["username"] + " - Link Tweet: " + i["url"])
         aux += 1
+
     return top10RtObject
 
 def TopUsers(data):
+
     usersDict = {}
     top10User = []
+
     for tweet in data:
         if (tweet["user"]["username"] in usersDict.keys()):
             usersDict[tweet["user"]["username"]] += 1
@@ -47,6 +54,7 @@ def TopUsers(data):
         aux += 1
 
     aux = 1
+    print("\n Top 10 Usuarios mas tuitteros:")
     for i in top10User:
         print(str(aux) + ".- Tweets: "+ str(i[1]) + " - User: " + i[0])
         aux += 1
@@ -54,8 +62,10 @@ def TopUsers(data):
     return(top10User)
 
 def TopDays(data):
+
     top10Days = []
     dayDict = {}
+
     for tweet in data: 
         tweetDate = tweet["date"]
         tweetDate = tweetDate.split("T")[0]
@@ -75,6 +85,7 @@ def TopDays(data):
         aux += 1
     
     aux = 1
+    print("\n Top 10 Dias mas tuitteados:")
     for i in top10Days:
         print(str(aux) + ".- Tweets: " + str(i[1])+ " - Date: "+ i[0])
         aux += 1
@@ -102,10 +113,13 @@ def TopHashtag(data):
         else:
             break
         aux += 1
+
+    print("\n Top 10 Hashtags mas usados:")
     aux = 1
     for i in top10Hashtag:
         print(str(aux) + ".- Times used: "+ str(i[1]) + " - Hastag: " + i[0])
         aux += 1
+
     return top10Hashtag
 
 def main():
