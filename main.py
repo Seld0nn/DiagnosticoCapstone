@@ -1,5 +1,6 @@
 import re
 import json
+from datetime import datetime
 
 def readJson():
     data = [json.loads(line) for line in open('data.json', 'r')]  
@@ -20,10 +21,10 @@ def TopTweets(data):
 
     top10RtObject.sort(key=lambda x: x["retweetCount"], reverse=True)
     for i in top10RtObject:
-        print(str(i["retweetCount"]) + "  " + i["user"]["username"] + "  " + i["url"])
+        print("Retweeted: " + str(i["retweetCount"]) + " - User: " + i["user"]["username"] + " - Link Tweet: " + i["url"])
     return top10RtObject
 
-def topUsers(data):
+def TopUsers(data):
     usersDict = {}
     top10User = []
     for tweet in data:
@@ -36,7 +37,7 @@ def topUsers(data):
 
     aux = 0
     for user in usersDict:
-        if aux < 9:
+        if aux < 10:
             top10User.append([user, usersDict[user]])
         else:
             break
@@ -47,9 +48,37 @@ def topUsers(data):
 
     return(top10User)
 
+def TopDays(data):
+    top10Days = []
+    dayDict = {}
+    for tweet in data: 
+        tweetDate = tweet["date"]
+        tweetDate = tweetDate.split("T")[0]
+        if (tweetDate in dayDict.keys()):
+            dayDict[tweetDate] += 1
+        else: 
+            dayDict[tweetDate] = 1
+
+    dayDict = {k: v for k, v in sorted(dayDict.items(), key=lambda item: item[1], reverse=True)}
+    
+    aux = 0
+    for user in dayDict:
+        if aux < 10:
+            top10Days.append([user, dayDict[user]])
+        else:
+            break
+        aux += 1
+    
+    for i in top10Days:
+        print("Date: "+ i[0] + " - Tweets: " + str(i[1]))
+
+    return(top10Days)
+
+
 def main():
     data = readJson()
     top10Rt = TopTweets(data)
-    top10User = topUsers(data)
+    top10User = TopUsers(data)
+    top10Day = TopDays(data) 
 
 main()
