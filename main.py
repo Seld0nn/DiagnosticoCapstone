@@ -20,8 +20,11 @@ def TopTweets(data):
                 top10RtArray.sort()
 
     top10RtObject.sort(key=lambda x: x["retweetCount"], reverse=True)
+
+    aux = 1
     for i in top10RtObject:
-        print("Retweeted: " + str(i["retweetCount"]) + " - User: " + i["user"]["username"] + " - Link Tweet: " + i["url"])
+        print(str(aux) + ".- Retweeted: " + str(i["retweetCount"]) + " - User: " + i["user"]["username"] + " - Link Tweet: " + i["url"])
+        aux += 1
     return top10RtObject
 
 def TopUsers(data):
@@ -43,8 +46,10 @@ def TopUsers(data):
             break
         aux += 1
 
+    aux = 1
     for i in top10User:
-        print("User: "+ i[0] + " - Tweets: " + str(i[1]))
+        print(str(aux) + ".- Tweets: "+ str(i[1]) + " - User: " + i[0])
+        aux += 1
 
     return(top10User)
 
@@ -69,16 +74,45 @@ def TopDays(data):
             break
         aux += 1
     
+    aux = 1
     for i in top10Days:
-        print("Date: "+ i[0] + " - Tweets: " + str(i[1]))
+        print(str(aux) + ".- Tweets: " + str(i[1])+ " - Date: "+ i[0])
+        aux += 1
 
     return(top10Days)
 
+def TopHashtag(data):
+    top10Hashtag = []
+    hashtagDict = {}
+
+    for tweet in data: 
+        tweethashtags = {tag.strip("#") for tag in tweet["content"].split() if tag.startswith("#")}
+        for hashtag in tweethashtags:
+            hasgtagLower = hashtag.lower()
+            if (hasgtagLower in hashtagDict):
+                hashtagDict[hasgtagLower] += 1
+            else: 
+                hashtagDict[hasgtagLower] = 1
+
+    hashtagDict = {k: v for k, v in sorted(hashtagDict.items(), key=lambda item: item[1], reverse=True)}
+    aux = 0
+    for user in hashtagDict:
+        if aux < 10:
+            top10Hashtag.append([user, hashtagDict[user]])
+        else:
+            break
+        aux += 1
+    aux = 1
+    for i in top10Hashtag:
+        print(str(aux) + ".- Times used: "+ str(i[1]) + " - Hastag: " + i[0])
+        aux += 1
+    return top10Hashtag
 
 def main():
     data = readJson()
     top10Rt = TopTweets(data)
     top10User = TopUsers(data)
-    top10Day = TopDays(data) 
+    top10Day = TopDays(data)
+    top10Hashtag = TopHashtag(data)
 
 main()
